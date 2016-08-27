@@ -1,0 +1,41 @@
+<div class='center col-md-6 col-md-offset-3' style='margin-top:10px;margin-bottom:10px;'>
+  <h2><%= @post.user_name %></h2>
+  <p><%= @blogger.bio %></p>
+  <% if user_signed_in? %>
+    <% if @post.user_id == current_user.id %>
+      <%= link_to 'Edit Post', edit_post_path(@post) %>&nbsp;
+      <%= link_to 'Delete Post', post_path(@post), method: :delete, class: 'danger', data: {confirm: 'Delete This Post?!'} %>
+    <% end %>
+  <% end %>
+</div>
+
+<div class='post-show col-md-8 col-md-offset-2'>
+  <h3><%= @post.title %></h3>
+  <p><%= @post.body %></h3>
+  <p style='float:right'>&nbsp;<%= @post.likes %></p>
+  <a href="/like/<%= @post.id %>" style='float:right;'><i class='fa fa-heart'></i></a>
+</div>
+
+<div class='col-md-8 col-md-offset-2'>
+  <h3 class='center'>Comments</h3>
+  <div class='post col-md-12'>
+    <% @post.comments.each do |comment| %>
+      <div class='post-comments'
+        <h5><%= link_to comment.user.user_name, blogger_path(comment.user.id) %><h5>
+        <p><%= comment.body %><p>
+      </div>
+    <% end %>
+  </div>
+  <% if user_signed_in? %>
+    <div id='new-comment' class='hidden'>
+      <%= form_for @new_comment do |f| %>
+        <%= f.text_area :body, autofocus: true, placeholder: 'New Comment', class: 'body'%>
+        <%= f.hidden_field :post_id, value: @post.id %>
+        <%= f.submit %>
+      <% end %>
+    </div>
+    <input type='submit' id='show-new-comment' value='New Comment'/>
+  <% else %>
+    <%= link_to 'Login To Comment', new_user_session_path, class: 'center' %>
+  <% end %>
+</div>
